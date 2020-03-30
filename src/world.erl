@@ -24,4 +24,8 @@ is_occupied([M|Ms], Pt) ->
 	true ->
 	    is_occupied(Ms, Pt)
     end.
-     
+
+add_point(Pt1, Pt2) ->
+    {pos, X,Y} = Pt1,
+    {pos, X1, Y1} = Pt2,
+    {pos, X+X1, Y+Y1}.

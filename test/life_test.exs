@@ -13,4 +13,11 @@ defmodule LifeTest do
     assert :world.is_occupied(map, {:pos, 0, 0}) == :true
     assert :world.is_occupied(map, {:pos, 100, 100}) == :false
   end
+
+  test "point arithmetic" do
+    assert :world.add_point({:pos, 0, 0}, {:pos, 0, 0}) == {:pos, 0, 0}
+    assert :world.add_point({:pos, 0, 0}, {:pos, 1, 1}) == {:pos, 1, 1}
+    assert :world.add_point({:pos, 1, 1}, {:pos, -1, -1}) == {:pos, 0, 0}
+    assert :world.add_point({:pos, 1, 1}, {:pos, 1, 1}) == {:pos, 2, 2}
+  end
 end
