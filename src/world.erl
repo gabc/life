@@ -2,11 +2,9 @@
 
 -compile(export_all).
 
-make() ->
-    [].
-
-make(X, Y) ->
-    X+Y.
+%% Max size of square per map.
+-define(XMAX, 100).
+-define(YMAX, 100).
 
 -record(entity, {type, age, health, pos}).
 
@@ -48,3 +46,7 @@ add_point(Pt1, Pt2) ->
     {pos, X,Y} = Pt1,
     {pos, X1, Y1} = Pt2,
     {pos, X+X1, Y+Y1}.
+
+pos_in_map(Pt) ->
+    {pos, X,Y} = Pt,
+    X >= 0 andalso Y >= 0 andalso X =< ?XMAX andalso Y =< ?YMAX.

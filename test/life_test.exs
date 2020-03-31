@@ -20,4 +20,11 @@ defmodule LifeTest do
     assert :world.add_point({:pos, 1, 1}, {:pos, -1, -1}) == {:pos, 0, 0}
     assert :world.add_point({:pos, 1, 1}, {:pos, 1, 1}) == {:pos, 2, 2}
   end
+
+  test "point in map" do
+    assert :world.pos_in_map({:pos, 0, 0}) == :true
+    assert :world.pos_in_map({:pos, 100, 100}) == :true
+    assert :world.pos_in_map({:pos, 101, 101}) == :false
+    assert :world.pos_in_map({:pos, -1, 0}) == :false
+  end
 end
