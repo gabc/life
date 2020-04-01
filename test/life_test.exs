@@ -34,4 +34,27 @@ defmodule LifeTest do
     assert :world.move({:pos, 0, 0}, :left) == {:pos, 0, -1}
     assert :world.move({:pos, 0, 0}, :right) == {:pos, 0, 1}
   end
+
+  test "can deal with one entity" do
+    e = spawn fn -> :world.entity(:foo, 0, {:pos, 0, 0}) end
+    send(e, {self(), {:get, :pos}})
+    receive do
+      {:ok, {:pos, 0, 0}} -> assert :true
+      _ -> assert :false
+    end
+
+    send(e, {self(), {:get, :age}})
+    receive do
+      {:ok, 0} -> assert :true
+      _ -> assert :false
+    end
+
+    send(e, {self(), {:action, :do_one_turn}})
+    send(e, {self(), {:get, :pos}})
+    receive do
+      {:ok, {:pos, 0, 0}} -> assert :false
+      {:ok, {:pos, _, _}} -> assert :true
+      _ -> assert :false
+    end
+  end
 end
