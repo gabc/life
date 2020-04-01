@@ -13,7 +13,7 @@ defmodule LifeTest do
     assert :world.pos_eq({:pos, 0, 0}, {:pos, 0, 0}) == :true
     assert :world.pos_eq({:pos, 0, 0}, {:pos, 1, 0}) == :false
   end
-  
+
   test "point arithmetic" do
     assert :world.add_point({:pos, 0, 0}, {:pos, 0, 0}) == {:pos, 0, 0}
     assert :world.add_point({:pos, 0, 0}, {:pos, 1, 1}) == {:pos, 1, 1}
@@ -26,5 +26,12 @@ defmodule LifeTest do
     assert :world.pos_in_map({:pos, 100, 100}) == :true
     assert :world.pos_in_map({:pos, 101, 101}) == :false
     assert :world.pos_in_map({:pos, -1, 0}) == :false
+  end
+
+  test "move in dir" do
+    assert :world.move({:pos, 0, 0}, :up) == {:pos, -1, 0}
+    assert :world.move({:pos, 0, 0}, :down) == {:pos, 1, 0}
+    assert :world.move({:pos, 0, 0}, :left) == {:pos, 0, -1}
+    assert :world.move({:pos, 0, 0}, :right) == {:pos, 0, 1}
   end
 end

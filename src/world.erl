@@ -6,10 +6,10 @@
 -define(XMAX, 100).
 -define(YMAX, 100).
 
--record(entity, {type, age, health, pos}).
+%% -record(entity, {type, age, health, pos}).
 
-make_entity(Type) ->
-    #entity{type=Type, age=0, health=100, pos={pos, 0, 0}}.
+%% make_entity(Type) ->
+%%     #entity{type=Type, age=0, health=100, pos={pos, 0, 0}}.
 
 add_entity(L, E) ->
     L ++ [E].
@@ -50,3 +50,46 @@ add_point(Pt1, Pt2) ->
 pos_in_map(Pt) ->
     {pos, X,Y} = Pt,
     X >= 0 andalso Y >= 0 andalso X =< ?XMAX andalso Y =< ?YMAX.
+
+number_to_dir(N) ->
+    case N of
+	1 ->
+	    up;
+	2 ->
+	    down;
+	3 ->
+	    left;
+	4 ->
+	    right
+    end.
+
+move(Pos, Dir) ->
+    case Dir of
+	up ->
+	    add_point(Pos, {pos, -1, 0});
+	down ->
+	    add_point(Pos, {pos, 1, 0});
+	left ->
+	    add_point(Pos, {pos, 0, -1});
+	right ->
+	    add_point(Pos, {pos, 0, 1})
+    end.
+
+entity(Type, Age, Pos) ->
+    receive
+	%% Getters
+	{From, {get, pos}} ->
+	    From ! {ok, Pos},
+	    entity(Type, Age, Pos);
+	{From, {get, age}} ->
+	    From ! {ok, Age},
+	    entity(Type, Age, Pos);
+	{From, {get, type}} ->
+	    From ! {ok, Type},
+	    entity(Type, Age, Pos);
+	%% Actions
+	{_, {action, do_one_turn}} ->
+	    Dir = number_to_dir(rand:uniform(4)),
+	    NPos = move(Pos, Dir),
+	    entity(Type, Age +1, NPos)	
+    end.
