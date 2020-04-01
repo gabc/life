@@ -52,16 +52,7 @@ pos_in_map(Pt) ->
     X >= 0 andalso Y >= 0 andalso X =< ?XMAX andalso Y =< ?YMAX.
 
 number_to_dir(N) ->
-    case N of
-	1 ->
-	    up;
-	2 ->
-	    down;
-	3 ->
-	    left;
-	4 ->
-	    right
-    end.
+    lists:nth(N, [up,down,left,right]).
 
 move(Pos, Dir) ->
     case Dir of
