@@ -26,10 +26,10 @@ entity_at([E|Es], Pt) ->
     end.
 
 is_occupied([], _) ->
-    false;    
+    false;
 is_occupied([M|Ms], Pt) ->
     Eq = pos_eq(Pt, M),
-    if 
+    if
 	Eq ->
 	    true;
 	true ->
@@ -40,7 +40,7 @@ pos_eq(Pos1, Pos2) ->
     {pos, X,Y} = Pos1,
     {pos, X1, Y1} = Pos2,
     X == X1 andalso Y == Y1.
-    
+
 
 add_point(Pt1, Pt2) ->
     {pos, X,Y} = Pt1,
@@ -82,5 +82,23 @@ entity(Type, Age, Pos) ->
 	{_, {action, do_one_turn}} ->
 	    Dir = number_to_dir(rand:uniform(4)),
 	    NPos = move(Pos, Dir),
-	    entity(Type, Age +1, NPos)	
+	    entity(Type, Age +1, NPos);
+	{From, {debug}} ->
+	    From ! {ok, {Type, Age, Pos}},
+	    entity(Type, Age, Pos)
+    end.
+
+world(State) ->
+    receive
+	%% Getters
+	{From, {get, state}} ->
+	    From ! {ok, State},
+	    world(State);
+	%% Actions
+	{_, {new_entity, Type, Pos}} ->
+	    NewEnt = spawn(?MODULE, entity, [Type, 0, Pos]),
+	    world(State ++ [NewEnt]);
+	{From, {debug}} ->
+	    lists:map(fun (E) -> {E ! {From, {debug}}} end, State),
+	    world(State)
     end.

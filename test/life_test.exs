@@ -1,6 +1,11 @@
 defmodule LifeTest do
   use ExUnit.Case
   doctest Life
+  def get do
+    receive do
+      x -> x
+    end
+  end
 
   test "the spot is occupied or not" do
     map = [{:pos, 0,0}, {:pos, 1,0}]
@@ -56,5 +61,23 @@ defmodule LifeTest do
       {:ok, {:pos, _, _}} -> assert :true
       _ -> assert :false
     end
+  end
+
+  test "can modify state" do
+    w = spawn fn -> :world.world([]) end
+    send(w, {self(), {:new_entity, :bar, {:pos, 0, 0}}})
+    send(w, {self(), {:get, :state}})
+    {:ok, state} = get()
+    assert length(state) == 1
+
+    send(w, {self(), {:new_entity, :bar, {:pos, 0, 0}}})
+    send(w, {self(), {:get, :state}})
+    {:ok, state} = get()
+    assert length(state) == 2
+
+    send(w, {self(), {:debug}})
+    # We get back 2 things.
+    {:ok, _state} = get()
+    {:ok, _state} = get()
   end
 end
