@@ -88,17 +88,17 @@ entity(Type, Age, Pos) ->
 	    entity(Type, Age, Pos)
     end.
 
-world(State) ->
+world(Entities) ->
     receive
 	%% Getters
 	{From, {get, state}} ->
-	    From ! {ok, State},
-	    world(State);
+	    From ! {ok, Entities},
+	    world(Entities);
 	%% Actions
 	{_, {new_entity, Type, Pos}} ->
 	    NewEnt = spawn(?MODULE, entity, [Type, 0, Pos]),
-	    world(State ++ [NewEnt]);
+	    world(Entities ++ [NewEnt]);
 	{From, {debug}} ->
-	    lists:map(fun (E) -> {E ! {From, {debug}}} end, State),
-	    world(State)
+	    lists:map(fun (E) -> {E ! {From, {debug}}} end, Entities),
+	    world(Entities)
     end.
