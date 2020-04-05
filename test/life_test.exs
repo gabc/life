@@ -80,4 +80,12 @@ defmodule LifeTest do
     {:ok, _state} = get()
     {:ok, _state} = get()
   end
+
+  test "can use gen_server" do
+    {:ok, pid} = GenServer.start_link(:entity, {:foo, 0, {:pos, 0, 0}})
+    a = GenServer.call(pid, :do_thing)
+    assert a == 3
+    {:foo, 0, {:pos, 0, 0}} = GenServer.call(pid, :state)
+    {:foo, 0, {:pos, 0, 0}} = :entity.state(pid)
+  end
 end

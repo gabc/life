@@ -100,5 +100,8 @@ world(Entities) ->
 	    world(Entities ++ [NewEnt]);
 	{From, {debug}} ->
 	    lists:map(fun (E) -> {E ! {From, {debug}}} end, Entities),
+	    world(Entities);
+	{From, {action, do_one_turn}} ->
+	    lists:map(fun (E) -> {E ! {From, {action, do_one_turn}}} end, Entities),
 	    world(Entities)
     end.
